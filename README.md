@@ -4,6 +4,10 @@ This tool is just a little thing I put together to speed up the reformatting of 
     my        goal      in          life          was,    just    like
     mein Vater und meine Mutter zu werden, so hell und rein, so
     my         father      and          my            mother       to       become,        so   bright    and     clean,     so
+    
+The original book looks like this:
+
+![Book](Demianimage.png)
 
 So this tool is to break them down into individual words and let me just use the arrow keys and enter to properly sort them into this format:
 
