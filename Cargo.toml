@@ -1,0 +1,11 @@
+[package]
+name = "demian"
+version = "0.1.0"
+authors = ["Dhghomon <56599343+Dhghomon@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crossterm = "0.19.0"
+ansi_term = "0.6.3"
