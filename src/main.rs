@@ -259,9 +259,39 @@ fn main() -> crossterm::Result<()> {
                     }
                 }
                 Esc => {
+                    // First add the new content to the file completed so far
                     for line in content.content_for_file {
                         demian_file.write(line.as_bytes())?;
                     }
+
+                    // Then make a new file to store all the remainder
+                    // to be loaded next time
+                    let mut new_file = fs::File::create("Demiantext.txt")?;
+                    
+                    // Put the current words we're working on back into the main content
+                    while !content.ready_to_insert.0.is_empty() {
+                        content.current_work.0.push_front(content.ready_to_insert.0.remove(0))
+                    }
+                    while !content.ready_to_insert.1.is_empty() {
+                        content.current_work.1.push_front(content.ready_to_insert.1.remove(0))
+                    }
+
+                    content.english.push_front(content.current_work.0);
+                    content.german.push_front(content.current_work.1);
+
+                    for (german, english) in content.german.iter().zip(content.english.iter()) {
+                        for word in german {
+                            new_file.write(word.as_bytes())?;
+                            new_file.write(" ".as_bytes())?;
+                        }
+                        new_file.write("\n".as_bytes())?;
+                        for word in english {
+                            new_file.write(word.as_bytes())?;
+                            new_file.write(" ".as_bytes())?;
+                        }
+                        new_file.write("\n".as_bytes())?;
+                    }
+
                     break;
                 }
                 _ => {}
