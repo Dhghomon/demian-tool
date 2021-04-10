@@ -295,7 +295,7 @@ fn main() -> crossterm::Result<()> {
                         }
                         writer.write("\n".as_bytes())?;
                     }
-
+                    writer.flush()?;
                     break;
                 }
                 _ => {}
