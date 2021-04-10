@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
-use std::{fs, io::Write, mem};
+use std::{fs, mem};
+use std::io::{Write, BufWriter};
 
 use ansi_term::Colour::{Cyan, Red};
 use crossterm::{event::*, queue, terminal::*};
@@ -266,7 +267,7 @@ fn main() -> crossterm::Result<()> {
 
                     // Then make a new file to store all the remainder
                     // to be loaded next time
-                    let mut new_file = fs::File::create("Demiantext.txt")?;
+                    let new_file = fs::File::create("Demiantext.txt")?;
                     
                     // Put the current words we're working on back into the main content
                     while !content.ready_to_insert.0.is_empty() {
@@ -279,17 +280,20 @@ fn main() -> crossterm::Result<()> {
                     content.english.push_front(content.current_work.0);
                     content.german.push_front(content.current_work.1);
 
+                    // Lots of tiny write calls so bring in BufWriter
+                    let mut writer = BufWriter::new(new_file);
+
                     for (german, english) in content.german.iter().zip(content.english.iter()) {
                         for word in german {
-                            new_file.write(word.as_bytes())?;
-                            new_file.write(" ".as_bytes())?;
+                            writer.write(word.as_bytes())?;
+                            writer.write(" ".as_bytes())?;
                         }
-                        new_file.write("\n".as_bytes())?;
+                        writer.write("\n".as_bytes())?;
                         for word in english {
-                            new_file.write(word.as_bytes())?;
-                            new_file.write(" ".as_bytes())?;
+                            writer.write(word.as_bytes())?;
+                            writer.write(" ".as_bytes())?;
                         }
-                        new_file.write("\n".as_bytes())?;
+                        writer.write("\n".as_bytes())?;
                     }
 
                     break;
