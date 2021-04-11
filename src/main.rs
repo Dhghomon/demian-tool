@@ -302,6 +302,14 @@ fn main() -> crossterm::Result<()> {
 
                     break;
                 }
+                Char('1') => {
+                    content.language = Language::German;
+                    content.up();
+                }
+                Char('2') => {
+                    content.language = Language::English;
+                    content.up();
+                }
                 _ => {}
             },
             _ => {}
