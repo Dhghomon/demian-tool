@@ -252,10 +252,13 @@ fn main() -> crossterm::Result<()> {
                     content.current_work.1
                         .push_front(content.ready_to_insert.1.pop().unwrap_or("".to_string()));
 
-                    content.ready_to_insert.0 = mem::take(&mut content.data_for_undo.0);
-                    content.ready_to_insert.1 = mem::take(&mut content.data_for_undo.1);
-                    // mem::swap(&mut content.data_for_undo.0, &mut content.ready_to_insert.0);
-                    // mem::swap(&mut content.data_for_undo.1, &mut content.ready_to_insert.1);
+                    while let Some(word) = content.data_for_undo.0.pop() {
+                        content.current_work.0.push_front(word);
+                    }
+                    while let Some(word) = content.data_for_undo.1.pop() {
+                        content.current_work.1.push_front(word);
+                    }
+                    
                     content.content_for_file.pop();
                     }
                 }
@@ -296,6 +299,7 @@ fn main() -> crossterm::Result<()> {
                         writer.write("\n".as_bytes())?;
                     }
                     writer.flush()?;
+
                     break;
                 }
                 _ => {}
