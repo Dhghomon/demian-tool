@@ -245,13 +245,15 @@ fn main() -> crossterm::Result<()> {
                 #[rustfmt::skip]
                 Delete => { // Delete = undo
 
-                    if !content.data_for_undo.0.is_empty() || !content.data_for_undo.1.is_empty() {
                     // First put the word in ready_to_insert back inside current_work
-                    content.current_work.0
-                        .push_front(content.ready_to_insert.0.pop().unwrap_or("".to_string()));
-                    content.current_work.1
-                        .push_front(content.ready_to_insert.1.pop().unwrap_or("".to_string()));
+                    while let Some(word) = content.ready_to_insert.0.pop() {
+                        content.current_work.0.push_front(word);
+                    }
+                    while let Some(word) = content.ready_to_insert.1.pop() {
+                        content.current_work.1.push_front(word);
+                    }
 
+                    // Then the saved data
                     while let Some(word) = content.data_for_undo.0.pop() {
                         content.current_work.0.push_front(word);
                     }
@@ -259,8 +261,9 @@ fn main() -> crossterm::Result<()> {
                         content.current_work.1.push_front(word);
                     }
                     
+                    // Then remove the (deemed by the user as incorrect) data ready to be saved to the file
                     content.content_for_file.pop();
-                    }
+                    
                 }
                 Esc => {
                     // First add the new content to the file completed so far
